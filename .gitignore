@@ -1,2 +1,8 @@
 /.vscode
 *.sdf
+aizynth-data
+__pycache__
+.env
+*.log
+data
+*.yml
