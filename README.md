@@ -161,43 +161,43 @@
 
 **Свойства:** 
 
-> Structure No
-> Brutto-formula
-> Molecular weight
-> Product Name
-> Short Description for web display
-> CAS
-> Stock amount - интересный коммерческий признак для данной задачи
-> Pathway
-> Target
-> IDNUMBER
-> PRICE - интересный коммерческий признак для данной задачи
-> SMILE
-> InChI
-> InChI_Key
-> Type of molecule
-> Alias
-> Monoisotopic Mass
-> Monoisotopic Mass 2
-> cLogP
-> cLogS
-> H-Acceptors
-> H-Donors
-> Total Surface Area
-> Polar Surface Area
-> Druglikeness
-> Molecular Complexity -> понадобится (у некоторых молекул отсуствует)
-> Metal-Atoms
-> Stereo Centers
-> Rotatable Bonds
-> Largest Ring Size
-> Small Rings
-> Aromatic Rings
-> Electronegative Atoms
-> sp3-Carbon Fraction
-> Largest Ring Size 2
-> Small Rings 2
-> Aromatic Rings 2
+* Structure No
+* Brutto-formula
+* Molecular weight
+* Product Name
+* Short Description for web display
+* CAS
+* Stock amount - интересный коммерческий признак для данной задачи
+* Pathway
+* Target
+* IDNUMBER
+* PRICE - интересный коммерческий признак для данной задачи
+* SMILE
+* InChI
+* InChI_Key
+* Type of molecule
+* Alias
+* Monoisotopic Mass
+* Monoisotopic Mass 2
+* cLogP
+* cLogS
+* H-Acceptors
+* H-Donors
+* Total Surface Area
+* Polar Surface Area
+* Druglikeness
+* Molecular Complexity -> понадобится (у некоторых молекул отсуствует)
+* Metal-Atoms
+* Stereo Centers
+* Rotatable Bonds
+* Largest Ring Size
+* Small Rings
+* Aromatic Rings
+* Electronegative Atoms
+* sp3-Carbon Fraction
+* Largest Ring Size 2
+* Small Rings 2
+* Aromatic Rings 2
 
 Анализ можно посмотреть в `/docs/analysis_original_data.ipynb`
 
