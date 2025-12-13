@@ -104,6 +104,8 @@ def calculate_synth_score(finder, mol: Chem.Mol, config: dict=None) -> float:
     try:
         collection = RouteCollection.from_analysis(finder.analysis)
         routes = collection.reaction_trees
+        logging.info(f"Routes: {routes}") # routes - список всех маршрутов
+        logging.info(f"Всего найдено маршрутов: {len(routes)}")
     except Exception as e:
         logging.warning(f"Ошибка при извлечении маршрутов: {e}")
         routes = []
@@ -111,28 +113,46 @@ def calculate_synth_score(finder, mol: Chem.Mol, config: dict=None) -> float:
 
     if routes:
         status_log = "Путь найден ✔️"
-        # best_route = finder.analysis.reaction_routes[0]
-        best_route = routes[0]
-        scores = best_route.scores
+        best_route = routes[0] # берем первый маршрут объекта ReactionTree
+        logging.info(f"best_route: {best_route}") # можно вывести в лог всю реакцию в str
+        logging.info(f"Metadata: {best_route.metadata}")
+        logging.info(f"Возможные атрибуты: {best_route.__dict__}")
+        logging.info(f"Возможные методы: {dir(best_route)}")
 
-        # 1. Шаги (Steps) - Сложность процесса
-        val_steps = getattr(scores, "NumberOfReactionsScorer", 0.0)
+        # ========= 1. Считаем ШАГИ (Steps) =========
+        # У ReactionTree есть метод reactions(), возвращающий итератор реакций
+        reactions_list = list(best_route.reactions())
+        val_steps = float(len(reactions_list))
+        
         n_steps = np.clip(val_steps / config['limit_steps'], 0, 1)
 
-        # 2. Сток (Stock) - Доступность реагентов
-        # Считаем, сколько листьев (precursors) есть в наличии
-        val_stock_count = getattr(scores, "NumberOfPrecursorsInStockScorer", 0.0)
-        total_precursors = max(1, len(best_route.leafs())) # Защита от деления на 0
+        # ======== 2. Считаем СТОК (Stock) ===========
+        # У ReactionTree есть метод leafs(), возвращающий начальные реагенты
+        leafs_list = list(best_route.leafs())
+        total_precursors = len(leafs_list)
         
-        # Ratio: 1.0 (все есть) -> 0.0 (ничего нет).
-        # Нам нужна сложность: (1 - Ratio). 
-        # Если все есть -> 0 сложность. Если ничего нет -> 1 сложность.
+        if total_precursors > 0:
+            in_stock_count = sum(1 for leaf in leafs_list if leaf in finder.stock)
+            val_stock_count = float(in_stock_count)
+        else:
+            val_stock_count = 0.0
+            
+        # Защита от деления на 0
+        total_precursors = max(1, total_precursors) 
+        
+        # Расчет доступности
         n_stock_diff = np.clip(1.0 - (val_stock_count / total_precursors), 0, 1)
 
-        # 3. Уверенность (State) - Риски
-        val_state = getattr(scores, "StateScorer", 1.0)
+        # ========= 3. Уверенность =========
+        # в GUI версии StateScore выражался числом
+        # тут уверенность помещается в "is_solved" в формате True/False
+        if getattr(best_route, "is_solved", False):
+            val_state = 0.99
+        else:
+            val_state = 0.01
+        if hasattr(best_route, "metadata") and "score" in best_route.metadata:
+            val_state = float(best_route.metadata["score"])
         n_state_diff = np.clip(1.0 - val_state, 0, 1)
-
         details_log = f"Шагов: {int(val_steps)}, Билдинг-блоки: {int(val_stock_count)}/{total_precursors}"
 
         wsum_rbs = (
@@ -146,9 +166,9 @@ def calculate_synth_score(finder, mol: Chem.Mol, config: dict=None) -> float:
         final_score = (imc_score * config['mix_w_imc']) + (rbs_score * config['mix_w_rbs'])
 
         # для лога
-        rbs_details = (f"Steps: {n_steps*100:.0f}%, "
-                           f"StockDiff: {n_stock_diff:.2f}, "
-                           f"StateDiff: {n_state_diff:.2f}")
+        rbs_details = [f"Steps: {n_steps*100:.0f}%, ",
+                           f"StockDiff: {n_stock_diff:.2f}, ",
+                           f"StateDiff: {n_state_diff:.2f}"]
 
         # imc
         contrib_imc = imc_score * config['mix_w_imc']
