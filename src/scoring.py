@@ -6,6 +6,7 @@ from rdkit import Chem
 from rdkit.Chem import Descriptors
 import logging
 import numpy as np
+from aizynthfinder.analysis import RouteCollection
 
 DEFAULT_CONFIG = {
     # --- Лимиты для расчета IMC (ИЗ ИСХОДНЫХ ДАННЫХ) ---
@@ -100,7 +101,12 @@ def calculate_synth_score(finder, mol: Chem.Mol, config: dict=None) -> float:
     rbs_details = [] # Для логгера
 
     # -----------------------------------------
-    routes = getattr(finder.analysis, 'reaction_routes', [])
+    try:
+        collection = RouteCollection.from_analysis(finder.analysis)
+        routes = collection.reaction_trees
+    except Exception as e:
+        logging.warning(f"Ошибка при извлечении маршрутов: {e}")
+        routes = []
     final_score = 0.0
 
     if routes:
@@ -146,7 +152,6 @@ def calculate_synth_score(finder, mol: Chem.Mol, config: dict=None) -> float:
 
         # imc
         contrib_imc = imc_score * config['mix_w_imc']
-
         contrib_rbs = rbs_score * config['mix_w_rbs']
     
     else:
