@@ -418,4 +418,11 @@ RBS (Score: 83.2 -> Вклад 40%: 33.3): Steps: 100%, , StockDiff: 0.17, , Sta
 
 1. Статья по ретросинтезу "Planning chemical syntheses with deep neural networks and symbolic AI" -> doi.org/10.1038/nature25978
 
+-----
+
+<div align="center">
+  <img src="https://api.visitorbadge.io/api/visitors?path=https://github.com/tatvladna/data_dicom&label=Repository%20Views&countColor=%23263759"/>
+</div>
+
+
     
