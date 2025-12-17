@@ -421,7 +421,7 @@ RBS (Score: 83.2 -> Вклад 40%: 33.3): Steps: 100%, , StockDiff: 0.17, , Sta
 -----
 
 <div align="center">
-  <img src="https://api.visitorbadge.io/api/visitors?path=https://github.com/tatvladna/data_dicom&label=Repository%20Views&countColor=%23263759"/>
+  <img src="https://api.visitorbadge.io/api/visitors?path=https://github.com/tatvladna/using_AiZynthFinder&label=Repository%20Views&countColor=%23263759"/>
 </div>
 
 
